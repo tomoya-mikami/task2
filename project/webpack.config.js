@@ -11,5 +11,22 @@ module.exports = {
     filename: 'bundle.js',
     // 出力先のパス（v2系以降は絶対パスを指定する必要がある）
     path: path.join(__dirname, 'public/js')
+  },
+  // typescript
+  module: {
+    rules: [
+      {
+        // 拡張子 .ts の場合
+        test: /\.ts$/,
+        // TypeScript をコンパイルする
+        use: 'ts-loader'
+      }
+    ]
+  },
+  // import 文で .ts ファイルを解決するため
+  resolve: {
+    extensions: [
+      '.ts'
+    ]
   }
 };
