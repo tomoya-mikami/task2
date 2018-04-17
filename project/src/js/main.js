@@ -41,11 +41,16 @@ function next() {
         global_time = global_timer_stop();
         clearInterval(mouce_interval);
         clearInterval(clear_pos_interval);
-        console.log(worker_answer);
-        console.log(global_time);
-        console.log(mouce_pos);
         var workspace = document.getElementById('workspace');
         workspace.innerHTML='<p>thank you!!</p>';
+        var form = document.createElement("form");
+        form.action = "";
+        form.method = "post";
+        form.innerHTML = `<input type="hidden" name="answer" value="${worker_answer}">`+
+                         `<input type="hidden" name="mouce" value="${mouce_pos}">`+
+                         `<input type="hidden" name="time" value="${global_time}">`+
+                         `<button type='submit' name='action' value='save'>submit</button>`;
+        workspace.appendChild(form);
     }
 }
 

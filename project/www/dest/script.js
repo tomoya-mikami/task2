@@ -1,3 +1,31 @@
+function bootstrap_setup() {
+    var d = document;
+    var link = d.createElement('link');
+    link.href = 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css';
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    var h = d.getElementsByTagName('head')[0];
+    h.appendChild(link);
+/*
+    var script_jquery = d.createElement('script');
+    script_jquery.src = "https://code.jquery.com/jquery-3.3.1.slim.min.js";
+    script_jquery.integrity = "sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo";
+    script_jquery.setAttribute("crossorigin", "anonymous");
+    h.appendChild(script_jquery);
+
+    var script_propper = d.createElement('script');
+    script_propper.src = "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js";
+    script_propper.integrity = "sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ";
+    script_propper.setAttribute("crossorigin", "anonymous");
+    h.appendChild(script_propper);
+
+    var script_bootstrap = d.createElement('script');
+    script_bootstrap.src = "https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js";
+    script_bootstrap.integrity = "sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm";
+    script_bootstrap.setAttribute("crossorigin", "anonymous");
+    h.appendChild(script_bootstrap);
+*/
+}
 var data = [
     ['1', 'collect?', 'http://www.ramica.net/kabegami_pc/base/003.jpg', 'a:b:c:d'],
     ['2', 'collect?', 'http://www.ramica.net/kabegami_pc/img/004.jpg', 'e:f:g:h'],
@@ -41,11 +69,16 @@ function next() {
         global_time = global_timer_stop();
         clearInterval(mouce_interval);
         clearInterval(clear_pos_interval);
-        console.log(worker_answer);
-        console.log(global_time);
-        console.log(mouce_pos);
         var workspace = document.getElementById('workspace');
         workspace.innerHTML='<p>thank you!!</p>';
+        var form = document.createElement("form");
+        form.action = "";
+        form.method = "post";
+        form.innerHTML = `<input type="hidden" name="answer" value="${worker_answer}">`+
+                         `<input type="hidden" name="mouce" value="${mouce_pos}">`+
+                         `<input type="hidden" name="time" value="${global_time}">`+
+                         `<button type='submit' name='action' value='save'>submit</button>`;
+        workspace.appendChild(form);
     }
 }
 
@@ -109,17 +142,22 @@ var Question = function(id, explanatory_text, explanatory_image, answer) {
 function question_create(question) {
     var parent_div = document.createElement('div');
     parent_div.id = question.id;
+    parent_div.className = 'col-12';
 
     var explane_div = document.createElement('div');
+    explane_div.className = 'col-4';
     explane_div.innerHTML = `<p>${question.explanatory_text}</p>` +
                             `<p><img src="${question.explanatory_image}"></p>`;
 
-    var answer_div = document.createElement('form');
-    answer_div.name = 'answer_form';
+    var answer_div = document.createElement('div');
+    answer_div.className = 'col-8';
+    var answer_form = document.createElement('form');
+    answer_form.name = 'answer_form';
     question.answer.forEach(element => {
-        answer_div.innerHTML += `<input type="radio" name="answer" value="${element.id}">${element.text}`;
+        answer_form.innerHTML += `<input type="radio" name="answer" class="col-4" value="${element.id}">${element.text}`;
     });
-    answer_div.innerHTML += '<button type="button" name="submit" onClick="check()">next question';
+    answer_form.innerHTML += '<button type="button" name="submit" class="col-8" onClick="check()">next question';
+    answer_div.appendChild(answer_form);
 
     parent_div.appendChild(explane_div);
     parent_div.appendChild(answer_div);
