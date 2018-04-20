@@ -1,3 +1,4 @@
+// question
 var data = [
     ['1', 'collect?', 'http://www.ramica.net/kabegami_pc/base/003.jpg', 'a:b:c:d'],
     ['2', 'collect?', 'http://www.ramica.net/kabegami_pc/img/004.jpg', 'e:f:g:h'],
@@ -13,6 +14,19 @@ var mouce_interval;
 var clear_pos_interval;
 
 var form;
+
+// timer
+var global_timer;
+var question_timer;
+
+// mouce position
+var g_pos = '';
+var tmp_x_pos = '';
+var tmp_y_pos = '';
+
+// ms
+var sample = 100;
+var clear_sample = 50000;
 
 function init() {
     data.forEach(element => {

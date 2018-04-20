@@ -8,6 +8,7 @@ function bootstrap_setup() {
     var h = d.getElementsByTagName('head')[0];
     h.appendChild(link);
 }
+// question
 var data = [
     ['1', 'collect?', 'http://www.ramica.net/kabegami_pc/base/003.jpg', 'a:b:c:d'],
     ['2', 'collect?', 'http://www.ramica.net/kabegami_pc/img/004.jpg', 'e:f:g:h'],
@@ -23,6 +24,19 @@ var mouce_interval;
 var clear_pos_interval;
 
 var form;
+
+// timer
+var global_timer;
+var question_timer;
+
+// mouce position
+var g_pos = '';
+var tmp_x_pos = '';
+var tmp_y_pos = '';
+
+// ms
+var sample = 100;
+var clear_sample = 50000;
 
 function init() {
     data.forEach(element => {
@@ -79,14 +93,6 @@ function check() {
         next();
     }
 }
-var g_pos = '';
-var tmp_x_pos = '';
-var tmp_y_pos = '';
-
-// ms
-var sample = 100;
-var clear_sample = 50000;
-
 document.onmousemove = function(e){
     tmp_x_pos = e.pageX;
     tmp_y_pos = e.pageY;
@@ -150,10 +156,6 @@ function question_create(question) {
 
     return parent_div;
 }
-
-var global_timer;
-var question_timer;
-
 function global_timer_start() {
     global_timer = new Date().getTime()
 }
@@ -168,3 +170,6 @@ function question_timer_start() {
 function question_timer_stop() {
     return new Date().getTime() - question_timer;
 }
+bootstrap_setup();
+init();
+set_start_page();

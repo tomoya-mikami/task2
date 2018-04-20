@@ -1,11 +1,3 @@
-var g_pos = '';
-var tmp_x_pos = '';
-var tmp_y_pos = '';
-
-// ms
-var sample = 100;
-var clear_sample = 50000;
-
 document.onmousemove = function(e){
     tmp_x_pos = e.pageX;
     tmp_y_pos = e.pageY;
