@@ -12,10 +12,13 @@ var global_time = '';
 var mouce_interval;
 var clear_pos_interval;
 
+var form;
+
 function init() {
     data.forEach(element => {
         question.push(new Question(parseInt(element[0]), element[1], element[2], element[3]));
     });
+    form = document.workform;
 }
 
 function set_start_page() {
@@ -43,10 +46,7 @@ function next() {
         clearInterval(clear_pos_interval);
         var workspace = document.getElementById('workspace');
         workspace.innerHTML='<p>thank you!!</p>';
-        var form = document.createElement("form");
-        form.action = "";
-        form.method = "post";
-        form.innerHTML = `<input type="hidden" name="answer" value="${worker_answer}">`+
+        form.innerHTML += `<input type="hidden" name="answer" value="${worker_answer}">`+
                          `<input type="hidden" name="mouce" value="${mouce_pos}">`+
                          `<input type="hidden" name="time" value="${global_time}">`+
                          `<button type='submit' name='action' value='save'>submit</button>`;
