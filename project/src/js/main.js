@@ -78,7 +78,7 @@ function check() {
         }
     }
     if (flag) {
-        mouce_pos += g_pos;
+        mouce_pos += '[' + g_pos + ']';
         clear_pos();
         next();
     }
