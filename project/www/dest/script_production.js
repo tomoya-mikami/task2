@@ -1,17 +1,6 @@
-function range_random(min, max) {
-    return Math.floor( Math.random() * (max + 1 - min) ) + min ;
-}
-var sheet_id = "1lztYdke02nRehrtNDefbopVD35UqzBYBkZFrgo6GcVc";
+var sheet_id = "1PzzjFbrMehtl2MI2u0MBLO3eJyzUMTBeMjUBiwmzn3g";
 var script_url = "https://script.google.com/macros/s/AKfycbyUwBWvrUW00BVXi1y-BrTDrWlhLxW49ggIOVIogt0Ur5p1tWPj/exec";
 var sheet_name = "mouce";
-var script_make_sheet = [
-    "https://script.google.com/macros/s/AKfycbxinJNL4zIyreRe0BWaB1BLS0zvSP4oWBLx3ktTKTqc_8JbNGJ8/exec",
-    "https://script.google.com/a/mlab.info/macros/s/AKfycbwSICB7mpdF9KnbFentLzkM5Kxdnt92hASY43tnkg/exec",
-    "https://script.google.com/a/mlab.info/macros/s/AKfycbxCTn_M2iB7Ra0wcdrApgu1C1gUd4oyttXe8oOM/exec",
-    "https://script.google.com/a/mlab.info/macros/s/AKfycbxVj2JIQ6w589lR1adkiIQ8ZsNeQx9unE9a4Lmu1g/exec",
-    "https://script.google.com/a/mlab.info/macros/s/AKfycbwKjTmM3F_F6ou38uZEMBf8QmFwuAuhjZmGlrYI/exec"
-];
-var enviroment = "develop";
 var data_url = "http://www.robots.ox.ac.uk/~vgg/data/pets/data/images/"
 
 var dataset = {
@@ -135,6 +124,10 @@ var question_num = 10;
 var user_id = 0;
 
 function init() {
+    /*
+    data.forEach(element => {
+        question.push(new Question(parseInt(element[0]), element[1], element[2], element[3]));
+    });*/
     form = document.workform;
     user_id = form._FACT1___id.value;
 }
@@ -146,27 +139,9 @@ function set_start_page() {
                         '<p>左に表示されるねこの画像と同じ品種の猫の画像を答えてください</p>' +
                         '<p>回答を送信する際少しだけ時間がかかります</p>' +
                         `<p>問題は全部で${question_num}問です</p>` +
-                        `<p>${question_num}問答えてくださった場合、正答率にかかわらずすべての方に報酬が出ます</p>`+
+                        `<p>${question_num}問答えてくださった場合、回答率にかかわらずすべての方に報酬が出ます</p>`+
                         '<button type="button" name="submit" onClick="next()" style="height:50px;width:400px">タスクを開始する</button>' +
                         '</div>';
-}
-
-function task_start() {
-    $.ajax({
-        url: script_make_sheet[0],
-        type: 'get',
-        dataType: 'jsonp',
-        data:{
-            'user_id' : user_id,
-            'enviroment' : enviroment,
-        }
-    }).done((data) =>{
-        console.log("sucess");
-        console.log(data.sheet_id);
-        console.log(data.sheet_name);
-    }).fail((error) =>{
-        console.log(error);
-    });
 }
 
 function next() {
@@ -188,12 +163,13 @@ function next() {
         clearInterval(mouce_interval);
         clearInterval(clear_pos_interval);
         var workspace = document.getElementById('workspace');
-        workspace.innerHTML='<p>これで作業は終了です</p>'+
-                            '<p>次のページにチェック設問の回答があります</p>' +
-                            '<p>ボタンを押して次のページに進んでください</p>';
+        workspace.innerHTML='<p>回答ありがとうございました</p>'+
+                            '<p>以下の番号をyahoo クラウドソーシングにて入力してください</p>' +
+                            '<strog>346</strong>' +
+                            '<p>この度はご協力ありがとうございました</p>';
         form.innerHTML += `<input type="hidden" name="answer" value="${worker_answer}">`+
                          `<input type="hidden" name="time" value="${global_time}">`+
-                         `<button type='submit' name='action' value='save'>次のページに進む</button>`;
+                         `<button type='submit' name='action' value='save'>submit</button>`;
         workspace.appendChild(form);
     }
 }
@@ -325,3 +301,4 @@ function question_timer_stop() {
 bootstrap_setup();
 init();
 set_start_page();
+// neko_test();

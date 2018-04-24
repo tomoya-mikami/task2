@@ -31,6 +31,7 @@ function question_create(question) {
     answer_row_div = document.createElement('div');
     answer_row_div.className = 'row';
     var answer_form = document.createElement('form');
+    answer_form.id = 'answer_form';
     answer_form.name = 'answer_form';
     answer_form.className = 'row';
     question.answer.forEach(element => {

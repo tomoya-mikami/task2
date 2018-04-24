@@ -47,7 +47,7 @@ function get_answer_set(collect_id) {
     var array = [];
     array.push(collect_id);
     for (var i = 0; i<3; i++) {
-        while(tmp == collect_id) {
+        while(array.indexOf(tmp) >= 0) {
             tmp = range_random(1, 12);
         }
         array.push(tmp);

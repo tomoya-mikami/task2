@@ -26,31 +26,46 @@ var tmp_y_pos = '';
 
 // ms
 var sample = 100;
-var clear_sample = 50000;
+var clear_sample = 10000;
 
 // question length
 var question_num = 10;
 
-// form_id
-var dev_sheet = "1lztYdke02nRehrtNDefbopVD35UqzBYBkZFrgo6GcVc";
-var staging_sheet = "17y41gyFPqqxLO8JFkkKyWX8wacGlKwkjGw3wEjIDQK0";
-var script_url = "https://script.google.com/macros/s/AKfycbyUwBWvrUW00BVXi1y-BrTDrWlhLxW49ggIOVIogt0Ur5p1tWPj/exec";
-var sheet_name = "mouce";
-
 var user_id = 0;
 
 function init() {
-    /*
-    data.forEach(element => {
-        question.push(new Question(parseInt(element[0]), element[1], element[2], element[3]));
-    });*/
     form = document.workform;
+    user_id = form._FACT1___id.value;
 }
 
 function set_start_page() {
     var workspace = document.getElementById('workspace');
-    workspace.innerHTML='<p>hello world</p>' + 
-                        '<button type="button" name="submit" onClick="next()">taskが始まるよ</button>';
+    workspace.innerHTML='<div style="margin: auto;">' +
+                        '<h2>ねこの品種の分別についてのタスク</h2>' +
+                        '<p>左に表示されるねこの画像と同じ品種の猫の画像を答えてください</p>' +
+                        '<p>回答を送信する際少しだけ時間がかかります</p>' +
+                        `<p>問題は全部で${question_num}問です</p>` +
+                        `<p>${question_num}問答えてくださった場合、正答率にかかわらずすべての方に報酬が出ます</p>`+
+                        '<button type="button" name="submit" onClick="next()" style="height:50px;width:400px">タスクを開始する</button>' +
+                        '</div>';
+}
+
+function task_start() {
+    $.ajax({
+        url: script_make_sheet[0],
+        type: 'get',
+        dataType: 'jsonp',
+        data:{
+            'user_id' : user_id,
+            'enviroment' : enviroment,
+        }
+    }).done((data) =>{
+        console.log("sucess");
+        console.log(data.sheet_id);
+        console.log(data.sheet_name);
+    }).fail((error) =>{
+        console.log(error);
+    });
 }
 
 function next() {
@@ -72,24 +87,37 @@ function next() {
         clearInterval(mouce_interval);
         clearInterval(clear_pos_interval);
         var workspace = document.getElementById('workspace');
-        workspace.innerHTML='<p>thank you!!</p>';
+        workspace.innerHTML='<p>これで作業は終了です</p>'+
+                            '<p>次のページにチェック設問の回答があります</p>' +
+                            '<p>ボタンを押して次のページに進んでください</p>';
         form.innerHTML += `<input type="hidden" name="answer" value="${worker_answer}">`+
-                         `<input type="hidden" name="mouce" value="${mouce_pos}">`+
                          `<input type="hidden" name="time" value="${global_time}">`+
-                         `<button type='submit' name='action' value='save'>submit</button>`;
+                         `<button type='submit' name='action' value='save'>次のページに進む</button>`;
         workspace.appendChild(form);
     }
 }
 
 function check() {
     var flag = false;
+
+    if ($('#answer_form [name=answer]:checked').val()) {
+        worker_answer += $('#answer_form [name=answer]:checked').val() + ",";
+        $('#answer_form [name=answer]:checked').prop('checked', false);
+        $('#answer_form [name=answer]').prop('disabled', true);
+        flag = true;
+    }
+
+    /*
     for(var i=0; i<document.answer_form.answer.length;i++){
         // i番目のラジオボタンがチェックされているかを判定
         if(document.answer_form.answer[i].checked){ 
             flag = true;
             worker_answer += document.answer_form.answer[i].value + ",";
+            document.answer_form.answer[i].checked = false;
+            document.answer_form.answer[i].disabled = true;
         }
     }
+    */
     if (flag) {
         //mouce_pos += '[' + g_pos + ']';
         $.ajax({
@@ -97,14 +125,18 @@ function check() {
             type: 'get',
             dataType: 'jsonp',
             data:{
-                'SPREADSHEET_ID' : dev_sheet,
+                'SPREADSHEET_ID' : sheet_id,
                 'SHEET_NAME' : sheet_name,
                 'user_id' : user_id,
+                'question_id' : question_id,
                 'position' : g_pos
             }
         }).done((data) =>{
             clear_pos();
             next();
+        }).fail((error) =>{
+            console.log(error);
+            $('#answer_form [name=answer]').prop('disabled', false);
         });
     }
 }
