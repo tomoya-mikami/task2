@@ -85,7 +85,11 @@ function next() {
         var collect_id = range_random(1, 12);
         workspace.innerHTML = '';
         question_id++;
-        workspace.appendChild(question_create(new Question(question_id, collect_id, get_answer_set(collect_id))));
+        if (question_id == 5) {
+            workspace.appendChild(question_create(new Question(question_id, gold_set[1].collect_id, gold_set[1].dataset), true, 1));
+        } else {
+            workspace.appendChild(question_create(new Question(question_id, collect_id, get_answer_set(collect_id))));
+        }
         clearInterval(clear_pos_interval);
         clear_pos_interval = setInterval(clear_pos, clear_sample);
     } else {

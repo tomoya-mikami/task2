@@ -16,7 +16,7 @@ var Question = function(id, collect_breed_id, answer_breed_array) {
     });
 }
 
-function question_create(question) {
+function question_create(question, gold_flag=false, gold_set_id = 0) {
     var parent_div = document.createElement('div');
     parent_div.id = question.id;
     parent_div.className = 'row';
@@ -34,12 +34,23 @@ function question_create(question) {
     answer_form.id = 'answer_form';
     answer_form.name = 'answer_form';
     answer_form.className = 'row';
-    question.answer.forEach(element => {
-        answer_form.innerHTML += `<div class="col-6" style="height:300px;position:relative">` +
-                                `<p>${get_img_tag(element.breed_id)}</p>` +
-                                `<div style="position:absolute;bottom:0;"><p style="font-size:2rem"><input type="radio" style="transform:scale(2.0);" name="answer" value="${question.id}:${element.breed_id}:${question.collect_breed_id}">   ${element.text}<p></div>`+
-                                `</div>`;
-    });
+    if ( ! gold_flag) {
+        question.answer.forEach(element => {
+            answer_form.innerHTML += `<div class="col-6" style="height:300px;position:relative">` +
+                                    `<p>${get_img_tag(element.breed_id)}</p>` +
+                                    `<div style="position:absolute;bottom:0;"><p style="font-size:2rem"><input type="radio" style="transform:scale(2.0);" name="answer" value="${question.id}:${element.breed_id}:${question.collect_breed_id}">   ${element.text}<p></div>`+
+                                    `</div>`;
+        });
+    } else {
+        var gold_set_num = 0;
+        gold_set[gold_set_id].dataset.forEach(element => {
+            answer_form.innerHTML += `<div class="col-6" style="height:300px;position:relative">` +
+            `<p>${get_gold_set_img_tag(element, gold_set[gold_set_id].img_id[gold_set_num])}</p>` +
+            `<div style="position:absolute;bottom:0;"><p style="font-size:2rem"><input type="radio" style="transform:scale(2.0);" name="answer" value="${question.id}:${element}:${gold_set[gold_set_id].collect_id}">   ${dataset[element]}<p></div>`+
+            `</div>`;
+            gold_set_num ++;
+        });
+    }
     answer_form.innerHTML += '<div class="col-12"><button type="button" name="submit" onClick="check()" style="width:100%;height:2rem">next question</div>';
     answer_row_div.appendChild(answer_form);
     answer_div.appendChild(answer_row_div);
