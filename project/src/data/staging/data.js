@@ -14,4 +14,4 @@ var script_make_sheet = [
     "https://script.google.com/macros/s/AKfycbzXdSj55PJxLxegY3K0wlHRJQEQ8XnhT1ZoEyJgX87J6QneMc0/exec"
 ];
 var sheet_name = "シート1";
-var enviroment = "production";
+var enviroment = "staging";

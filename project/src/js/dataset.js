@@ -1,4 +1,4 @@
-var data_url = "http://www.robots.ox.ac.uk/~vgg/data/pets/data/images/"
+var data_url = "https://s3-ap-northeast-1.amazonaws.com/cattask/cat_breed_task/"
 
 var dataset = {
     1 : "Abyssinian",
@@ -35,7 +35,7 @@ function range_random(min, max) {
 }
 
 function image_link_set (num, image_num) {
-    return `${data_url}${dataset[num]}_${image_num}.jpg`;
+    return `${data_url}${dataset[num]}_${image_num}_R.jpg`;
 }
 
 function get_img_tag(i) {

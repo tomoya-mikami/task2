@@ -138,11 +138,12 @@ function check() {
                 'position' : g_pos
             }
         }).done((data) =>{
-            clear_pos();
-            next();
+            //
         }).fail((error) =>{
             console.log(error);
             $('#answer_form [name=answer]').prop('disabled', false);
         });
+        clear_pos();
+        next();
     }
 }

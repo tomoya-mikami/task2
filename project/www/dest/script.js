@@ -18,7 +18,7 @@ var script_make_sheet = [
     "https://script.google.com/macros/s/AKfycbzXdSj55PJxLxegY3K0wlHRJQEQ8XnhT1ZoEyJgX87J6QneMc0/exec"
 ];
 var enviroment = "develop";
-var data_url = "http://www.robots.ox.ac.uk/~vgg/data/pets/data/images/"
+var data_url = "https://s3-ap-northeast-1.amazonaws.com/cattask/cat_breed_task/"
 
 var dataset = {
     1 : "Abyssinian",
@@ -55,7 +55,7 @@ function range_random(min, max) {
 }
 
 function image_link_set (num, image_num) {
-    return `${data_url}${dataset[num]}_${image_num}.jpg`;
+    return `${data_url}${dataset[num]}_${image_num}_R.jpg`;
 }
 
 function get_img_tag(i) {
@@ -245,12 +245,13 @@ function check() {
                 'position' : g_pos
             }
         }).done((data) =>{
-            clear_pos();
-            next();
+            //
         }).fail((error) =>{
             console.log(error);
             $('#answer_form [name=answer]').prop('disabled', false);
         });
+        clear_pos();
+        next();
     }
 }
 document.onmousemove = function(e){
@@ -337,3 +338,4 @@ function question_timer_stop() {
 bootstrap_setup();
 init();
 set_start_page();
+//neko_test();
