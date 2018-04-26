@@ -1,6 +1,20 @@
 var sheet_id = "1PzzjFbrMehtl2MI2u0MBLO3eJyzUMTBeMjUBiwmzn3g";
-var script_url = "https://script.google.com/macros/s/AKfycbyUwBWvrUW00BVXi1y-BrTDrWlhLxW49ggIOVIogt0Ur5p1tWPj/exec";
-var sheet_name = "mouce";
+var script_url = [
+    "https://script.google.com/macros/s/AKfycbyUwBWvrUW00BVXi1y-BrTDrWlhLxW49ggIOVIogt0Ur5p1tWPj/exec",
+    "https://script.google.com/macros/s/AKfycbwJV-ZMMlMZVM6eBHFB4ZoEAKrazPRsQHxMJT2voE0em9uS_Xs/exec",
+    "https://script.google.com/macros/s/AKfycbwOL4X8LgU_Vgckd6iTiBtcln-cGDapORLNQh6BKlM1pA1qqBI/exec",
+    "https://script.google.com/macros/s/AKfycbzTVjujCn89_RnW678rzHwxwMKvPSSv8xVXlWoaP8zDubSlUK4/exec",
+    "https://script.google.com/macros/s/AKfycbxOtp1coLfDhmryHyL-Xsor5aob3Lf5ZQQoqeA1OIsgA1wbg9wQ/exec"
+];
+var sheet_name = "シート1"
+var script_make_sheet = [
+    "https://script.google.com/macros/s/AKfycbxinJNL4zIyreRe0BWaB1BLS0zvSP4oWBLx3ktTKTqc_8JbNGJ8/exec",
+    "https://script.google.com/macros/s/AKfycbzq6zZLXYhTBa04MSA3-vjPdjsvmA6RckW8Ft_OFNqmgAILM4a2/exec",
+    "https://script.google.com/macros/s/AKfycbzV6hF6HuOi4SRcZdo4z77q-oZ5NAvJ3KJdPFYGvjVN7_us9ck/exec",
+    "https://script.google.com/macros/s/AKfycbxjIGXV7YK-nvz-LLgJzNQphJR0lv4vdk9fcRrlzOBxqM4fTF7Y/exec",
+    "https://script.google.com/macros/s/AKfycbzXdSj55PJxLxegY3K0wlHRJQEQ8XnhT1ZoEyJgX87J6QneMc0/exec"
+];
+var enviroment = "production";
 var data_url = "http://www.robots.ox.ac.uk/~vgg/data/pets/data/images/"
 
 var dataset = {
@@ -124,10 +138,6 @@ var question_num = 10;
 var user_id = 0;
 
 function init() {
-    /*
-    data.forEach(element => {
-        question.push(new Question(parseInt(element[0]), element[1], element[2], element[3]));
-    });*/
     form = document.workform;
     user_id = form._FACT1___id.value;
 }
@@ -139,9 +149,33 @@ function set_start_page() {
                         '<p>左に表示されるねこの画像と同じ品種の猫の画像を答えてください</p>' +
                         '<p>回答を送信する際少しだけ時間がかかります</p>' +
                         `<p>問題は全部で${question_num}問です</p>` +
-                        `<p>${question_num}問答えてくださった場合、回答率にかかわらずすべての方に報酬が出ます</p>`+
-                        '<button type="button" name="submit" onClick="next()" style="height:50px;width:400px">タスクを開始する</button>' +
+                        `<p>${question_num}問答えてくださった場合、正答率にかかわらずすべての方に報酬が出ます</p>`+
+                        '<button type="button" name="submit" onClick="task_start()" style="height:50px;width:400px">タスクを開始する</button>' +
+                        '<div id="start_wait"></div>' +
                         '</div>';
+}
+
+function task_start() {
+    var node = document.getElementById("start_wait");
+    node.innerHTML = "<p>タスクが始まるまでしばらくお待ちください</p>"
+    $.ajax({
+        url: script_make_sheet[range_random(0, 4)],
+        type: 'get',
+        dataType: 'jsonp',
+        data:{
+            'user_id' : user_id,
+            'enviroment' : enviroment,
+        }
+    }).done((data) =>{
+        console.log("sucess");
+        console.log(data.sheet_id);
+        console.log(data.sheet_name);
+        sheet_id = data.sheet_id;
+        next();
+    }).fail((error) =>{
+        console.log(error);
+        node.innerHTML = "<p>タスクの開始に失敗しました。もう一度ボタンを押してください</p>"
+    });
 }
 
 function next() {
@@ -163,13 +197,12 @@ function next() {
         clearInterval(mouce_interval);
         clearInterval(clear_pos_interval);
         var workspace = document.getElementById('workspace');
-        workspace.innerHTML='<p>回答ありがとうございました</p>'+
-                            '<p>以下の番号をyahoo クラウドソーシングにて入力してください</p>' +
-                            '<strog>346</strong>' +
-                            '<p>この度はご協力ありがとうございました</p>';
+        workspace.innerHTML='<p>これで作業は終了です</p>'+
+                            '<p>次のページにチェック設問の回答があります</p>' +
+                            '<p>ボタンを押して次のページに進んでください</p>';
         form.innerHTML += `<input type="hidden" name="answer" value="${worker_answer}">`+
                          `<input type="hidden" name="time" value="${global_time}">`+
-                         `<button type='submit' name='action' value='save'>submit</button>`;
+                         `<button type='submit' name='action' value='save'>次のページに進む</button>`;
         workspace.appendChild(form);
     }
 }
@@ -198,7 +231,7 @@ function check() {
     if (flag) {
         //mouce_pos += '[' + g_pos + ']';
         $.ajax({
-            url: script_url,
+            url: script_url[range_random(0, 4)],
             type: 'get',
             dataType: 'jsonp',
             data:{
@@ -301,4 +334,3 @@ function question_timer_stop() {
 bootstrap_setup();
 init();
 set_start_page();
-// neko_test();

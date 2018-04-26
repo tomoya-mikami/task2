@@ -2,14 +2,20 @@ function range_random(min, max) {
     return Math.floor( Math.random() * (max + 1 - min) ) + min ;
 }
 var sheet_id = "1lztYdke02nRehrtNDefbopVD35UqzBYBkZFrgo6GcVc";
-var script_url = "https://script.google.com/macros/s/AKfycbyUwBWvrUW00BVXi1y-BrTDrWlhLxW49ggIOVIogt0Ur5p1tWPj/exec";
-var sheet_name = "mouce";
+var script_url = [
+    "https://script.google.com/macros/s/AKfycbyUwBWvrUW00BVXi1y-BrTDrWlhLxW49ggIOVIogt0Ur5p1tWPj/exec",
+    "https://script.google.com/macros/s/AKfycbwJV-ZMMlMZVM6eBHFB4ZoEAKrazPRsQHxMJT2voE0em9uS_Xs/exec",
+    "https://script.google.com/macros/s/AKfycbwOL4X8LgU_Vgckd6iTiBtcln-cGDapORLNQh6BKlM1pA1qqBI/exec",
+    "https://script.google.com/macros/s/AKfycbzTVjujCn89_RnW678rzHwxwMKvPSSv8xVXlWoaP8zDubSlUK4/exec",
+    "https://script.google.com/macros/s/AKfycbxOtp1coLfDhmryHyL-Xsor5aob3Lf5ZQQoqeA1OIsgA1wbg9wQ/exec"
+];
+var sheet_name = "シート1";
 var script_make_sheet = [
     "https://script.google.com/macros/s/AKfycbxinJNL4zIyreRe0BWaB1BLS0zvSP4oWBLx3ktTKTqc_8JbNGJ8/exec",
-    "https://script.google.com/a/mlab.info/macros/s/AKfycbwSICB7mpdF9KnbFentLzkM5Kxdnt92hASY43tnkg/exec",
-    "https://script.google.com/a/mlab.info/macros/s/AKfycbxCTn_M2iB7Ra0wcdrApgu1C1gUd4oyttXe8oOM/exec",
-    "https://script.google.com/a/mlab.info/macros/s/AKfycbxVj2JIQ6w589lR1adkiIQ8ZsNeQx9unE9a4Lmu1g/exec",
-    "https://script.google.com/a/mlab.info/macros/s/AKfycbwKjTmM3F_F6ou38uZEMBf8QmFwuAuhjZmGlrYI/exec"
+    "https://script.google.com/macros/s/AKfycbzq6zZLXYhTBa04MSA3-vjPdjsvmA6RckW8Ft_OFNqmgAILM4a2/exec",
+    "https://script.google.com/macros/s/AKfycbzV6hF6HuOi4SRcZdo4z77q-oZ5NAvJ3KJdPFYGvjVN7_us9ck/exec",
+    "https://script.google.com/macros/s/AKfycbxjIGXV7YK-nvz-LLgJzNQphJR0lv4vdk9fcRrlzOBxqM4fTF7Y/exec",
+    "https://script.google.com/macros/s/AKfycbzXdSj55PJxLxegY3K0wlHRJQEQ8XnhT1ZoEyJgX87J6QneMc0/exec"
 ];
 var enviroment = "develop";
 var data_url = "http://www.robots.ox.ac.uk/~vgg/data/pets/data/images/"
@@ -147,13 +153,16 @@ function set_start_page() {
                         '<p>回答を送信する際少しだけ時間がかかります</p>' +
                         `<p>問題は全部で${question_num}問です</p>` +
                         `<p>${question_num}問答えてくださった場合、正答率にかかわらずすべての方に報酬が出ます</p>`+
-                        '<button type="button" name="submit" onClick="next()" style="height:50px;width:400px">タスクを開始する</button>' +
+                        '<button type="button" name="submit" onClick="task_start()" style="height:50px;width:400px">タスクを開始する</button>' +
+                        '<div id="start_wait"></div>' +
                         '</div>';
 }
 
 function task_start() {
+    var node = document.getElementById("start_wait");
+    node.innerHTML = "<p>タスクが始まるまでしばらくお待ちください</p>"
     $.ajax({
-        url: script_make_sheet[0],
+        url: script_make_sheet[range_random(0, 4)],
         type: 'get',
         dataType: 'jsonp',
         data:{
@@ -164,8 +173,11 @@ function task_start() {
         console.log("sucess");
         console.log(data.sheet_id);
         console.log(data.sheet_name);
+        sheet_id = data.sheet_id;
+        next();
     }).fail((error) =>{
         console.log(error);
+        node.innerHTML = "<p>タスクの開始に失敗しました。もう一度ボタンを押してください</p>"
     });
 }
 
@@ -222,7 +234,7 @@ function check() {
     if (flag) {
         //mouce_pos += '[' + g_pos + ']';
         $.ajax({
-            url: script_url,
+            url: script_url[range_random(0, 4)],
             type: 'get',
             dataType: 'jsonp',
             data:{

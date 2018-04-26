@@ -46,13 +46,16 @@ function set_start_page() {
                         '<p>回答を送信する際少しだけ時間がかかります</p>' +
                         `<p>問題は全部で${question_num}問です</p>` +
                         `<p>${question_num}問答えてくださった場合、正答率にかかわらずすべての方に報酬が出ます</p>`+
-                        '<button type="button" name="submit" onClick="next()" style="height:50px;width:400px">タスクを開始する</button>' +
+                        '<button type="button" name="submit" onClick="task_start()" style="height:50px;width:400px">タスクを開始する</button>' +
+                        '<div id="start_wait"></div>' +
                         '</div>';
 }
 
 function task_start() {
+    var node = document.getElementById("start_wait");
+    node.innerHTML = "<p>タスクが始まるまでしばらくお待ちください</p>"
     $.ajax({
-        url: script_make_sheet[0],
+        url: script_make_sheet[range_random(0, 4)],
         type: 'get',
         dataType: 'jsonp',
         data:{
@@ -63,8 +66,11 @@ function task_start() {
         console.log("sucess");
         console.log(data.sheet_id);
         console.log(data.sheet_name);
+        sheet_id = data.sheet_id;
+        next();
     }).fail((error) =>{
         console.log(error);
+        node.innerHTML = "<p>タスクの開始に失敗しました。もう一度ボタンを押してください</p>"
     });
 }
 
@@ -121,7 +127,7 @@ function check() {
     if (flag) {
         //mouce_pos += '[' + g_pos + ']';
         $.ajax({
-            url: script_url,
+            url: script_url[range_random(0, 4)],
             type: 'get',
             dataType: 'jsonp',
             data:{
