@@ -209,9 +209,11 @@ function next() {
 
 function check() {
     var flag = false;
+    var question_answer = "";
 
     if ($('#answer_form [name=answer]:checked').val()) {
-        worker_answer += $('#answer_form [name=answer]:checked').val() + ",";
+        question_answer = $('#answer_form [name=answer]:checked').val() + ",";
+        worker_answer += question_answer;
         $('#answer_form [name=answer]:checked').prop('checked', false);
         $('#answer_form [name=answer]').prop('disabled', true);
         flag = true;
@@ -239,7 +241,8 @@ function check() {
                 'SHEET_NAME' : sheet_name,
                 'user_id' : user_id,
                 'question_id' : question_id,
-                'position' : g_pos
+                'position' : g_pos,
+                'question_answer' : question_answer
             }
         }).done((data) =>{
             //
