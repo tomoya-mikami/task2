@@ -150,6 +150,7 @@ function set_start_page() {
     workspace.innerHTML='<div style="margin: auto;">' +
                         '<h2>ねこの品種の分別についてのタスク</h2>' +
                         '<p>左に表示されるねこの画像と同じ品種の猫の画像を答えてください</p>' +
+                        '<p><img src="https://s3-ap-northeast-1.amazonaws.com/cattask/information.jpg" style="width:500px;heihgt:auto"></p>' +
                         '<p>回答を送信する際少しだけ時間がかかります</p>' +
                         `<p>問題は全部で${question_num}問です</p>` +
                         `<p>${question_num}問答えてくださった場合、正答率にかかわらずすべての方に報酬が出ます</p>`+
