@@ -30,6 +30,19 @@ var error_dataset = {
     12 : 142
 }
 
+var gold_set = {
+    "1" : {
+        "collect_id" : 1,
+        "dataset" : [1, 2, 3, 4],
+        "img_id" : [1, 2, 3, 4]
+    },
+    "2" : {
+        "collect_id" : 2,
+        "dataset" : [2, 5, 7, 9],
+        "img_id" : [5, 6, 7, 8]
+    }
+}
+
 function range_random(min, max) {
     return Math.floor( Math.random() * (max + 1 - min) ) + min ;
 }
@@ -40,6 +53,10 @@ function image_link_set (num, image_num) {
 
 function get_img_tag(i) {
     return `<img src="${image_link_set(i, range_random(1, 100))}" onerror="this.src='${image_link_set(i, error_dataset[i])}';" style="max-height:240px;max-width:300px">`;
+}
+
+function get_gold_set_img_tag(n, m) {
+    return `<img src="${image_link_set(n, m)}" style="max-height:240px;max-width:300px">`;
 }
 
 function get_answer_set(collect_id) {
