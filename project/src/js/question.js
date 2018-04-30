@@ -16,15 +16,20 @@ var Question = function(id, collect_breed_id, answer_breed_array) {
     });
 }
 
-function question_create(question, gold_flag=false, gold_set_id = 0) {
+function question_create(question, gold_flag=false, gold_set_id = 0, collect_img = 0) {
     var parent_div = document.createElement('div');
     parent_div.id = question.id;
     parent_div.className = 'row';
 
     var explane_div = document.createElement('div');
     explane_div.className = 'col-4';
-    explane_div.innerHTML = `<p style="font-size:4rem">${get_img_tag(question.collect_breed_id)}</p>` +
-                            `<p>${question.explanatory_text}</p>`;
+    if ( ! gold_flag) {
+        explane_div.innerHTML = `<p style="font-size:4rem">${get_img_tag(question.collect_breed_id)}</p>` +
+        `<p style="font-size:2rem">${question.explanatory_text}  ${question_id} / ${question_num}</p>`;
+    } else {
+        explane_div.innerHTML = `<p style="font-size:4rem">${get_gold_set_img_tag(question.collect_breed_id, collect_img)}</p>` +
+        `<p style="font-size:2rem">${question.explanatory_text}  ${question_id} / ${question_num}</p>`;
+    }
 
     var answer_div = document.createElement('div');
     answer_div.className = 'col-8';

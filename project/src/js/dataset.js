@@ -32,14 +32,16 @@ var error_dataset = {
 
 var gold_set = {
     "1" : {
-        "collect_id" : 1,
-        "dataset" : [1, 2, 3, 4],
-        "img_id" : [1, 2, 3, 4]
+        "collect_id" : 3,
+        "collect_img" : 153,
+        "dataset" : [1, 3, 2, 4],
+        "img_id" : [1, 12, 3, 4]
     },
     "2" : {
-        "collect_id" : 2,
-        "dataset" : [2, 5, 7, 9],
-        "img_id" : [5, 6, 7, 8]
+        "collect_id" : 4,
+        "collect_img" : 4,
+        "dataset" : [4, 5, 3, 2],
+        "img_id" : [144, 6, 7, 46]
     }
 }
 

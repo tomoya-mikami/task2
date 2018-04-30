@@ -52,14 +52,16 @@ var error_dataset = {
 
 var gold_set = {
     "1" : {
-        "collect_id" : 1,
-        "dataset" : [1, 2, 3, 4],
-        "img_id" : [1, 2, 3, 4]
+        "collect_id" : 3,
+        "collect_img" : 153,
+        "dataset" : [1, 3, 2, 4],
+        "img_id" : [1, 12, 3, 4]
     },
     "2" : {
-        "collect_id" : 2,
-        "dataset" : [2, 5, 7, 9],
-        "img_id" : [5, 6, 7, 8]
+        "collect_id" : 4,
+        "collect_img" : 4,
+        "dataset" : [4, 5, 3, 2],
+        "img_id" : [144, 6, 7, 46]
     }
 }
 
@@ -153,7 +155,7 @@ var sample = 100;
 var clear_sample = 10000;
 
 // question length
-var question_num = 10;
+var question_num = 50;
 
 var user_id = 0;
 
@@ -210,8 +212,10 @@ function next() {
         var collect_id = range_random(1, 12);
         workspace.innerHTML = '';
         question_id++;
-        if (question_id == 5) {
-            workspace.appendChild(question_create(new Question(question_id, gold_set[1].collect_id, gold_set[1].dataset), true, 1));
+        if (question_id == 10) {
+            workspace.appendChild(question_create(new Question(question_id, gold_set[1].collect_id, gold_set[1].dataset), true, 1, gold_set[1].collect_img));
+        } else if(question_id == 30) {
+            workspace.appendChild(question_create(new Question(question_id, gold_set[2].collect_id, gold_set[2].dataset), true, 2, gold_set[2].collect_img));
         } else {
             workspace.appendChild(question_create(new Question(question_id, collect_id, get_answer_set(collect_id))));
         }
@@ -313,15 +317,20 @@ var Question = function(id, collect_breed_id, answer_breed_array) {
     });
 }
 
-function question_create(question, gold_flag=false, gold_set_id = 0) {
+function question_create(question, gold_flag=false, gold_set_id = 0, collect_img = 0) {
     var parent_div = document.createElement('div');
     parent_div.id = question.id;
     parent_div.className = 'row';
 
     var explane_div = document.createElement('div');
     explane_div.className = 'col-4';
-    explane_div.innerHTML = `<p style="font-size:4rem">${get_img_tag(question.collect_breed_id)}</p>` +
-                            `<p>${question.explanatory_text}</p>`;
+    if ( ! gold_flag) {
+        explane_div.innerHTML = `<p style="font-size:4rem">${get_img_tag(question.collect_breed_id)}</p>` +
+        `<p style="font-size:2rem">${question.explanatory_text}  ${question_id} / ${question_num}</p>`;
+    } else {
+        explane_div.innerHTML = `<p style="font-size:4rem">${get_gold_set_img_tag(question.collect_breed_id, collect_img)}</p>` +
+        `<p style="font-size:2rem">${question.explanatory_text}  ${question_id} / ${question_num}</p>`;
+    }
 
     var answer_div = document.createElement('div');
     answer_div.className = 'col-8';

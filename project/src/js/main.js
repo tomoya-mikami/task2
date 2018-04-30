@@ -29,7 +29,7 @@ var sample = 100;
 var clear_sample = 10000;
 
 // question length
-var question_num = 10;
+var question_num = 50;
 
 var user_id = 0;
 
@@ -86,8 +86,10 @@ function next() {
         var collect_id = range_random(1, 12);
         workspace.innerHTML = '';
         question_id++;
-        if (question_id == 5) {
-            workspace.appendChild(question_create(new Question(question_id, gold_set[1].collect_id, gold_set[1].dataset), true, 1));
+        if (question_id == 10) {
+            workspace.appendChild(question_create(new Question(question_id, gold_set[1].collect_id, gold_set[1].dataset), true, 1, gold_set[1].collect_img));
+        } else if(question_id == 30) {
+            workspace.appendChild(question_create(new Question(question_id, gold_set[2].collect_id, gold_set[2].dataset), true, 2, gold_set[2].collect_img));
         } else {
             workspace.appendChild(question_create(new Question(question_id, collect_id, get_answer_set(collect_id))));
         }

@@ -47,6 +47,21 @@ var error_dataset = {
     12 : 142
 }
 
+var gold_set = {
+    "1" : {
+        "collect_id" : 3,
+        "collect_img" : 153,
+        "dataset" : [1, 3, 2, 4],
+        "img_id" : [1, 12, 3, 4]
+    },
+    "2" : {
+        "collect_id" : 4,
+        "collect_img" : 4,
+        "dataset" : [4, 5, 3, 2],
+        "img_id" : [144, 6, 7, 46]
+    }
+}
+
 function range_random(min, max) {
     return Math.floor( Math.random() * (max + 1 - min) ) + min ;
 }
@@ -57,6 +72,10 @@ function image_link_set (num, image_num) {
 
 function get_img_tag(i) {
     return `<img src="${image_link_set(i, range_random(1, 100))}" onerror="this.src='${image_link_set(i, error_dataset[i])}';" style="max-height:240px;max-width:300px">`;
+}
+
+function get_gold_set_img_tag(n, m) {
+    return `<img src="${image_link_set(n, m)}" style="max-height:240px;max-width:300px">`;
 }
 
 function get_answer_set(collect_id) {
@@ -133,7 +152,7 @@ var sample = 100;
 var clear_sample = 10000;
 
 // question length
-var question_num = 10;
+var question_num = 50;
 
 var user_id = 0;
 
@@ -147,6 +166,7 @@ function set_start_page() {
     workspace.innerHTML='<div style="margin: auto;">' +
                         '<h2>ねこの品種の分別についてのタスク</h2>' +
                         '<p>左に表示されるねこの画像と同じ品種の猫の画像を答えてください</p>' +
+                        '<p><img src="https://s3-ap-northeast-1.amazonaws.com/cattask/information.jpg" style="width:500px;heihgt:auto"></p>' +
                         '<p>回答を送信する際少しだけ時間がかかります</p>' +
                         `<p>問題は全部で${question_num}問です</p>` +
                         `<p>${question_num}問答えてくださった場合、正答率にかかわらずすべての方に報酬が出ます</p>`+
@@ -189,7 +209,13 @@ function next() {
         var collect_id = range_random(1, 12);
         workspace.innerHTML = '';
         question_id++;
-        workspace.appendChild(question_create(new Question(question_id, collect_id, get_answer_set(collect_id))));
+        if (question_id == 10) {
+            workspace.appendChild(question_create(new Question(question_id, gold_set[1].collect_id, gold_set[1].dataset), true, 1, gold_set[1].collect_img));
+        } else if(question_id == 30) {
+            workspace.appendChild(question_create(new Question(question_id, gold_set[2].collect_id, gold_set[2].dataset), true, 2, gold_set[2].collect_img));
+        } else {
+            workspace.appendChild(question_create(new Question(question_id, collect_id, get_answer_set(collect_id))));
+        }
         clearInterval(clear_pos_interval);
         clear_pos_interval = setInterval(clear_pos, clear_sample);
     } else {
@@ -288,15 +314,20 @@ var Question = function(id, collect_breed_id, answer_breed_array) {
     });
 }
 
-function question_create(question) {
+function question_create(question, gold_flag=false, gold_set_id = 0, collect_img = 0) {
     var parent_div = document.createElement('div');
     parent_div.id = question.id;
     parent_div.className = 'row';
 
     var explane_div = document.createElement('div');
     explane_div.className = 'col-4';
-    explane_div.innerHTML = `<p style="font-size:4rem">${get_img_tag(question.collect_breed_id)}</p>` +
-                            `<p>${question.explanatory_text}</p>`;
+    if ( ! gold_flag) {
+        explane_div.innerHTML = `<p style="font-size:4rem">${get_img_tag(question.collect_breed_id)}</p>` +
+        `<p style="font-size:2rem">${question.explanatory_text}  ${question_id} / ${question_num}</p>`;
+    } else {
+        explane_div.innerHTML = `<p style="font-size:4rem">${get_gold_set_img_tag(question.collect_breed_id, collect_img)}</p>` +
+        `<p style="font-size:2rem">${question.explanatory_text}  ${question_id} / ${question_num}</p>`;
+    }
 
     var answer_div = document.createElement('div');
     answer_div.className = 'col-8';
@@ -306,12 +337,23 @@ function question_create(question) {
     answer_form.id = 'answer_form';
     answer_form.name = 'answer_form';
     answer_form.className = 'row';
-    question.answer.forEach(element => {
-        answer_form.innerHTML += `<div class="col-6" style="height:300px;position:relative">` +
-                                `<p>${get_img_tag(element.breed_id)}</p>` +
-                                `<div style="position:absolute;bottom:0;"><p style="font-size:2rem"><input type="radio" style="transform:scale(2.0);" name="answer" value="${question.id}:${element.breed_id}:${question.collect_breed_id}">   ${element.text}<p></div>`+
-                                `</div>`;
-    });
+    if ( ! gold_flag) {
+        question.answer.forEach(element => {
+            answer_form.innerHTML += `<div class="col-6" style="height:300px;position:relative">` +
+                                    `<p>${get_img_tag(element.breed_id)}</p>` +
+                                    `<div style="position:absolute;bottom:0;"><p style="font-size:2rem"><input type="radio" style="transform:scale(2.0);" name="answer" value="${question.id}:${element.breed_id}:${question.collect_breed_id}">   ${element.text}<p></div>`+
+                                    `</div>`;
+        });
+    } else {
+        var gold_set_num = 0;
+        gold_set[gold_set_id].dataset.forEach(element => {
+            answer_form.innerHTML += `<div class="col-6" style="height:300px;position:relative">` +
+            `<p>${get_gold_set_img_tag(element, gold_set[gold_set_id].img_id[gold_set_num])}</p>` +
+            `<div style="position:absolute;bottom:0;"><p style="font-size:2rem"><input type="radio" style="transform:scale(2.0);" name="answer" value="${question.id}:${element}:${gold_set[gold_set_id].collect_id}">   ${dataset[element]}<p></div>`+
+            `</div>`;
+            gold_set_num ++;
+        });
+    }
     answer_form.innerHTML += '<div class="col-12"><button type="button" name="submit" onClick="check()" style="width:100%;height:2rem">next question</div>';
     answer_row_div.appendChild(answer_form);
     answer_div.appendChild(answer_row_div);
