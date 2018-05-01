@@ -54,9 +54,9 @@ Views:
     !Thanks(){
         <div class="container">
             <div>
-                <p>"ご協力ありがとうございました"</p>
-                <p>"yahoo クラウドソーシングに戻って以下のコードを入力してください"</p>
-                <p>"ねこ大好き"</p>
+                <p style="font-size:1.5rem">"ご協力ありがとうございました"</p>
+                <p style="font-size:1.5rem">"yahoo クラウドソーシングに戻って以下のコードを入力してください"</p>
+                <p style="font-size:1.5rem">"ねこ大好き"</p>
             </div>
         </div>
     }

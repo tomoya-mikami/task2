@@ -168,11 +168,11 @@ function set_start_page() {
     var workspace = document.getElementById('workspace');
     workspace.innerHTML='<div style="margin: auto;">' +
                         '<h2>ねこの品種の分別についてのタスク</h2>' +
-                        '<p>左に表示されるねこの画像と同じ品種の猫の画像を答えてください</p>' +
+                        '<p style="font-size:1.5rem">左に表示されるねこの画像と同じ品種の猫の画像を答えてください</p>' +
                         '<p><img src="https://s3-ap-northeast-1.amazonaws.com/cattask/information.jpg" style="width:500px;heihgt:auto"></p>' +
-                        '<p>回答を送信する際少しだけ時間がかかります</p>' +
-                        `<p>問題は全部で${question_num}問です</p>` +
-                        `<p>${question_num}問答えてくださった場合、正答率にかかわらずすべての方に報酬が出ます</p>`+
+                        '<p style="font-size:1.5rem">回答を送信する際少しだけ時間がかかります</p>' +
+                        `<p style="font-size:1.5rem">問題は全部で${question_num}問です</p>` +
+                        `<p style="font-size:1.5rem">${question_num}問答えてくださった場合、正答率にかかわらずすべての方に報酬が出ます</p>`+
                         '<button type="button" name="submit" onClick="task_start()" style="height:50px;width:400px">タスクを開始する</button>' +
                         '<div id="start_wait"></div>' +
                         '</div>';
@@ -226,9 +226,9 @@ function next() {
         clearInterval(mouce_interval);
         clearInterval(clear_pos_interval);
         var workspace = document.getElementById('workspace');
-        workspace.innerHTML='<p>これで作業は終了です</p>'+
-                            '<p>次のページにチェック設問の回答があります</p>' +
-                            '<p>ボタンを押して次のページに進んでください</p>';
+        workspace.innerHTML='<p style="font-size:1.5rem">これで作業は終了です</p>'+
+                            '<p style="font-size:1.5rem">次のページにチェック設問の回答があります</p>' +
+                            '<p style="font-size:1.5rem">ボタンを押して次のページに進んでください</p>';
         form.innerHTML += `<input type="hidden" name="answer" value="${worker_answer}">`+
                          `<input type="hidden" name="time" value="${global_time}">`+
                          `<button type='submit' name='action' value='save'>次のページに進む</button>`;
