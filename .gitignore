@@ -3,3 +3,4 @@ project/node_modules
 project/package-lock.json
 analysis/data/*
 analysis/image/*
+analysis/result/*
