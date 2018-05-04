@@ -6,7 +6,7 @@ import math
 import numpy as np
 
 enviroment_id = 2
-data_arrange = 2
+data_arrange = 3
 
 # 正解数を一時的に保存する変数
 collect_num = 0
@@ -34,7 +34,7 @@ def collect_check(answer_str):
 
 # 環境のセットアップ
 enviroment_set = ["develop/develop", "develop/staging", "production"]
-data_arrange_set = ["no_arrange", "normalization", "scala"]
+data_arrange_set = ["no_arrange", "normalization", "scala", "scala_normalized"]
 path = "./data/" + enviroment_set[enviroment_id]
 image_path = "./image/" + enviroment_set[enviroment_id]
 files = os.listdir(path)
@@ -88,15 +88,23 @@ for _file in files:
                         elif data_arrange == 2:
                             move_x.append(int(now_tmp_mouce_move[0]))
                             move_y.append(int(now_tmp_mouce_move[1]))
+                        elif data_arrange == 3:
+                            x = int(now_tmp_mouce_move[0])
+                            y = int(now_tmp_mouce_move[1])
+                            size = math.sqrt(x*x + y*y)
+                            if size == 0:
+                                size = 1
+                            move_x.append(x / size)
+                            move_y.append(y / size)
         data_list.append([str(input_sheet_df.iat[0, 1]), str((collect_num/len(input_sheet_df.index)) * 100), flag, str(np.corrcoef(move_x, move_y)[0, 1])])
         plt.rcParams["font.size"] = 24
         plt.figure(figsize=(8, 8))
         #plt.xlim([-600,600])
         #plt.ylim([-600,600])
-        plt.xticks( [0, 500, 1000] )
-        plt.yticks( [0, 500, 1000] )
-        #plt.scatter(move_x, move_y)
-        #plt.savefig(mouce_img + 'mouce_user_' + str(input_sheet_df.iat[0, 1]) + '.png')
+        #plt.xticks( [0, 500, 1000] )
+        #plt.yticks( [0, 500, 1000] )
+        plt.scatter(move_x, move_y)
+        plt.savefig(mouce_img + 'mouce_user_' + str(input_sheet_df.iat[0, 1]) + '.png')
         plt.close()
         print('user_' + str(input_sheet_df.iat[0, 1]) + ' image finish')
 
