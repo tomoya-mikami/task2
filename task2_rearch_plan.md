@@ -61,3 +61,8 @@
 - Rzeszotarski, Jeffrey M and Kittur, Aniket. "Instrumenting the crowd: using implicit behavioral measures to predict task performance". Proceedings of the 24th annual ACM symposium on User interface software and technology. ACM, 2011, p.13-22.
 - Oleson, David and Sorokin, Alexander and Laughlin, Greg P and Hester, Vaughn and Le, John and Biewald, Lukas. Programmatic Gold: Targeted and Scalable Quality Assurance in Crowdsourcing. Human computation. 2011, 11(11).
 - 松田義貴，鈴木優，中村哲 タスク介入によるクラウドワーカの品質推定精度の改善 第10回データ工学と情報マネジメントに関するフォーラム (DEIM2018), Mar. 2018
+
+## Welchのt検定(独立した2群の平均値の比較)
+
+gold standardに引っかかった人と、引っかかってない人で有意な差があるか
+また、引っかかったがスコアの高い人と引っかかってない人で有意な差があるか
