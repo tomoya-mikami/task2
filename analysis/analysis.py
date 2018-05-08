@@ -51,7 +51,8 @@ mouce_img = './image/' + enviroment_set[enviroment_id] + '/' + data_arrange_set[
 # ファイルを読み込む
 anova = []
 anova_tmp = []
-
+"""
+#t検定
 for _file in files:
     input_book = pd.ExcelFile(path + "/" + _file)
     input_sheet_name = input_book.sheet_names
@@ -108,8 +109,49 @@ for _file in files:
 
 df = pd.DataFrame(anova, index = col_file, columns = col_file)
 df.to_csv('./result/' + enviroment_set[enviroment_id] + '/result_no_0_abs_t_test.csv')
+"""
+higher_answer_x = []
+higher_answer_y = []
+lower_answer_x = []
+lower_answer_y = []
+tmp_move_x = []
+tmp_move_y = []
+#t検定2
+for _file in files:
+    input_book = pd.ExcelFile(path + "/" + _file)
+    input_sheet_name = input_book.sheet_names
+    input_sheet_df = input_book.parse(input_sheet_name[0])
+    if len(input_sheet_df) > 49:
+        print('user_' + str(input_sheet_df.iat[0, 1]) + ' culcurate start')
+        collect_num = 0
+        tmp_move_x = []
+        tmp_move_y = []
+        for index, row in input_sheet_df.iterrows():
+            if (collect_check(row['question_answer'])):
+                collect_num += 1
+            if isinstance(row['position'], str):
+                tmp_mouce_pairs = row['position'].split(',')
+                tmp_mouce_pairs = list(filter(lambda str:str != '', tmp_mouce_pairs))
+                for i in range(1, len(tmp_mouce_pairs)):
+                    now_tmp_mouce_move = tmp_mouce_pairs[i].split(':')
+                    before_tmp_mouce_move = tmp_mouce_pairs[i-1].split(':')
+                    tmp_move_x.append(abs(int(now_tmp_mouce_move[0]) - int(before_tmp_mouce_move[0])))
+                    tmp_move_y.append(abs(int(now_tmp_mouce_move[1]) - int(before_tmp_mouce_move[1])))
+        x_s = sum(tmp_move_x)
+        x_l = len(tmp_move_x)
+        y_s = sum(tmp_move_y)
+        y_l = len(tmp_move_y)
+        if collect_num > 30:
+            higher_answer_x.append(x_s/x_l)
+            higher_answer_y.append(y_s/y_l)
+        else:
+            lower_answer_x.append(x_s/x_l)
+            lower_answer_y.append(y_s/y_l)
+
+print(' x : ' + str(stats.ttest_ind(higher_answer_x, lower_answer_x, equal_var = False)) + ' y : ' + str(stats.ttest_ind(higher_answer_y, lower_answer_y, equal_var = False)))
 
 """
+# 画像と正答率の出力
 for _file in files:
     input_book = pd.ExcelFile(path + "/" + _file)
     input_sheet_name = input_book.sheet_names
@@ -180,6 +222,10 @@ for _file in files:
         print('user_' + str(input_sheet_df.iat[0, 1]) + ' image finish')
 """
 
+# 以下は正答率などの書き出し
+df = pd.DataFrame(data_list, columns=['user_id', 'answer', 'low_worker_flag', 'Correlation' ])
+#df.to_csv('./result/' + enviroment_set[enviroment_id] + '/' + data_arrange_set[data_arrange] + '/' + 'result_10.csv')
+
 """
 for _file in files:
     input_book = pd.ExcelFile(path + "/" + _file)
@@ -200,8 +246,3 @@ for _file in files:
         # print('user_' + str(input_sheet_df.iat[0, 1]) + ' : ' + str((collect_num/len(input_sheet_df.index)) * 100))
         collect_num = 0
 """
-
-
-# 以下は正答率などの書き出し
-df = pd.DataFrame(data_list, columns=['user_id', 'answer', 'low_worker_flag', 'Correlation' ])
-#df.to_csv('./result/' + enviroment_set[enviroment_id] + '/' + data_arrange_set[data_arrange] + '/' + 'result_10.csv')
