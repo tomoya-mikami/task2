@@ -110,12 +110,15 @@ for _file in files:
 df = pd.DataFrame(anova, index = col_file, columns = col_file)
 df.to_csv('./result/' + enviroment_set[enviroment_id] + '/result_no_0_abs_t_test.csv')
 """
+
+
 higher_answer_x = []
 higher_answer_y = []
 lower_answer_x = []
 lower_answer_y = []
 tmp_move_x = []
 tmp_move_y = []
+var = []
 #t検定2
 for _file in files:
     input_book = pd.ExcelFile(path + "/" + _file)
@@ -126,29 +129,42 @@ for _file in files:
         collect_num = 0
         tmp_move_x = []
         tmp_move_y = []
+        flag = 0
+        l = 0
         for index, row in input_sheet_df.iterrows():
+            l+=1
             if (collect_check(row['question_answer'])):
                 collect_num += 1
+            elif l == 10:
+                flag = 1
             if isinstance(row['position'], str):
                 tmp_mouce_pairs = row['position'].split(',')
                 tmp_mouce_pairs = list(filter(lambda str:str != '', tmp_mouce_pairs))
                 for i in range(1, len(tmp_mouce_pairs)):
                     now_tmp_mouce_move = tmp_mouce_pairs[i].split(':')
                     before_tmp_mouce_move = tmp_mouce_pairs[i-1].split(':')
-                    tmp_move_x.append(abs(int(now_tmp_mouce_move[0]) - int(before_tmp_mouce_move[0])))
-                    tmp_move_y.append(abs(int(now_tmp_mouce_move[1]) - int(before_tmp_mouce_move[1])))
+                    x = int(now_tmp_mouce_move[0]) - int(before_tmp_mouce_move[0])
+                    y = int(now_tmp_mouce_move[1]) - int(before_tmp_mouce_move[1])
+                    if x != 0 and y !=0:
+                        tmp_move_x.append(x)
+                        tmp_move_y.append(y)
+        """
         x_s = sum(tmp_move_x)
         x_l = len(tmp_move_x)
         y_s = sum(tmp_move_y)
         y_l = len(tmp_move_y)
+        """
         if collect_num > 30:
-            higher_answer_x.append(x_s/x_l)
-            higher_answer_y.append(y_s/y_l)
+            higher_answer_x.append(np.var(tmp_move_x))
+            higher_answer_y.append(np.var(tmp_move_y))
         else:
-            lower_answer_x.append(x_s/x_l)
-            lower_answer_y.append(y_s/y_l)
+            lower_answer_x.append(np.var(tmp_move_x))
+            lower_answer_y.append(np.var(tmp_move_y))
+        var.append([str(input_sheet_df.iat[0, 1]), np.var(tmp_move_x), np.var(tmp_move_y)])
 
 print(' x : ' + str(stats.ttest_ind(higher_answer_x, lower_answer_x, equal_var = False)) + ' y : ' + str(stats.ttest_ind(higher_answer_y, lower_answer_y, equal_var = False)))
+df = pd.DataFrame(var, columns=['user_id', 'x_var', 'y_var'])
+df.to_csv('./result/' + enviroment_set[enviroment_id] + '/' + data_arrange_set[data_arrange] + '/' + 'result_var.csv')
 
 """
 # 画像と正答率の出力
@@ -159,6 +175,7 @@ for _file in files:
     move_x = []
     move_y = []
     collect_num = 0
+    zero_count = 0
     if len(input_sheet_df) > 49:
         print('user_' + str(input_sheet_df.iat[0, 1]) + ' image create')
         l = 0
@@ -201,10 +218,12 @@ for _file in files:
                     elif data_arrange == 4:
                         x = int(now_tmp_mouce_move[0]) - int(before_tmp_mouce_move[0])
                         y = int(now_tmp_mouce_move[1]) - int(before_tmp_mouce_move[1])
-                        if x != 0 and y != 0:
+                        if x == 0 and y == 0:
+                            zero_count += 1
+                        else:
                             move_x.append(x)
                             move_y.append(y)
-        data_list.append([str(input_sheet_df.iat[0, 1]), str((collect_num/len(input_sheet_df.index)) * 100), flag, str(np.corrcoef(move_x, move_y)[0, 1])])
+        data_list.append([str(input_sheet_df.iat[0, 1]), str((collect_num/len(input_sheet_df.index)) * 100), flag, str(np.corrcoef(move_x, move_y)[0, 1]), zero_count])
         plt.rcParams['font.family'] = 'IPAPGothic'
         plt.rcParams["font.size"] = 24
         plt.figure(figsize=(8, 8))
@@ -215,17 +234,17 @@ for _file in files:
         plt.ylim([-300,300])
         #plt.xticks( [0, 500, 1000] )
         #plt.yticks( [0, 500, 1000] )
-        plt.scatter(move_x, move_y)
+        #plt.scatter(move_x, move_y)
         #plt.hist([move_x, move_y], stacked=True)
-        plt.savefig(mouce_img + 'mouce_user_' + str(input_sheet_df.iat[0, 1]) + '.png')
+        #plt.savefig(mouce_img + 'mouce_user_' + str(input_sheet_df.iat[0, 1]) + '.png')
         plt.close()
         print('user_' + str(input_sheet_df.iat[0, 1]) + ' image finish')
-"""
+
 
 # 以下は正答率などの書き出し
-df = pd.DataFrame(data_list, columns=['user_id', 'answer', 'low_worker_flag', 'Correlation' ])
-#df.to_csv('./result/' + enviroment_set[enviroment_id] + '/' + data_arrange_set[data_arrange] + '/' + 'result_10.csv')
-
+df = pd.DataFrame(data_list, columns=['user_id', 'answer', 'low_worker_flag', 'Correlation', 'zero_count'])
+df.to_csv('./result/' + enviroment_set[enviroment_id] + '/' + data_arrange_set[data_arrange] + '/' + 'result_10.csv')
+"""
 """
 for _file in files:
     input_book = pd.ExcelFile(path + "/" + _file)
